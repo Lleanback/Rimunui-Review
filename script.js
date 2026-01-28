@@ -1,4 +1,3 @@
-js
 // script.js
 
 // This line will be auto-updated by build-images.js
