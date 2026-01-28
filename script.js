@@ -325,27 +325,40 @@ gallery.addEventListener("click", (event) => {
 
   const index = Number(item.dataset.index);
 
-  if (item.classList.contains("expanded")) {
-    const img = item.querySelector("img");
-    if (!img) {
-      item.classList.remove("expanded");
-      document.body.style.overflow = "";
-      currentIndex = null;
-      return;
-    }
-
-    const rect = img.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const halfWidth = rect.width / 2;
-
-    if (clickX < halfWidth) {
-      const prevIndex = (currentIndex - 1 + imageFiles.length) % imageFiles.length;
-      expandImageAtIndex(prevIndex);
-    } else {
-      const nextIndex = (currentIndex + 1) % imageFiles.length;
-      expandImageAtIndex(nextIndex);
-    }
-  } else {
+  // If not expanded yet, expand the clicked image
+  if (!item.classList.contains("expanded")) {
     expandImageAtIndex(index);
+    return;
+  }
+
+  // Already expanded: decide prev / next / close based on click position
+  const img = item.querySelector("img");
+  if (!img) {
+    item.classList.remove("expanded");
+    document.body.style.overflow = "";
+    currentIndex = null;
+    return;
+  }
+
+  const rect = img.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  const width = rect.width;
+
+  const leftZone = width * 0.25;   // 0–25% = previous
+  const rightZone = width * 0.75;  // 75–100% = next
+
+  if (clickX < leftZone) {
+    // Go to previous image
+    const prevIndex = (currentIndex - 1 + imageFiles.length) % imageFiles.length;
+    expandImageAtIndex(prevIndex);
+  } else if (clickX > rightZone) {
+    // Go to next image
+    const nextIndex = (currentIndex + 1) % imageFiles.length;
+    expandImageAtIndex(nextIndex);
+  } else {
+    // Middle 50% = close back to gallery view
+    item.classList.remove("expanded");
+    document.body.style.overflow = "";
+    currentIndex = null;
   }
 });
