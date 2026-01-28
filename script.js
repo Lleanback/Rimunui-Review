@@ -146,7 +146,7 @@ const imageFiles = [
   "images/157A2424.avif"
 ]; // DO NOT EDIT MANUALLY
 
-const gallery = document.getElementById("gallery");
+const gallery = document.querySelector(".gallery");
 
 // Build the grid
 imageFiles.forEach((src, index) => {
